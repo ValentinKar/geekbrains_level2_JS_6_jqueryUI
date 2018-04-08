@@ -6,6 +6,10 @@
 const questionUrl = './cities.json';
 // массив для названий городов
 var cities = [];
+var $dialog = $( "#dialog" );
+var $datepicker = $('#birthday');
+var $form = $('#form');
+
 
 //AJAX
 $.ajax({
@@ -23,7 +27,8 @@ $.ajax({
 });
 
 // после того, как загрузился документ
-$(document).ready(function () {
+// $(document).ready(function () {
+$(document).on('ready', function() {
 // html тег select с классом city
 let select = $('.city ');
     // для каждого элемента из массива с городами
@@ -35,89 +40,114 @@ let select = $('.city ');
         // размещение <option>sity</option> внутри select
         $(option).appendTo(select);
     })
+            // календарь
+            $datepicker.datepicker({
+                dateFormat: "dd.mm.yy",
+                dayNamesMin: [ "ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ" ],
+                firstDay: 1
+            });
+
+        // диалоговое окно с ошибками
+        $dialog.hide();
 });
 
-/**
- * 3. Создать форму обратной связи с полями: Имя, Телефон, 
- * e-mail, текст, кнопка «Отправить».
- * 
- * ** - При нажатии на кнопку «Отправить» произвести валидацию полей 
- * следующим образом:
- * 
- * - Имя содержит только буквы;
- * 
- * ** - Телефон подчиняется шаблону +7(000)000-0000;**
- * 
- * ** - E-mail выглядит как mymail@mail.ru, или my.mail@mail.ru, 
- * или my-mail@mail.ru**
- * 
- * ** - Текст произвольный;**
- * ** - В случае не прохождения валидации одним из полей необходимо 
- * выделять это поле красной рамкой и сообщать пользователю об ошибке.**
- * --------------------------------------------------------------------
- * Функция возвращает элемент из html по его id.
- * @param {string} id - идентификатор тега.
- * @returns {object} Возвращается html-элемент.
- */
-function getElementFromHtml(id) {
-    return document.getElementById(id);
-}
-
-/**
- * Функция проверяет значение тега на соотв. регулярному выражению.
- * @param {string} idElement - Тэг, значение которого проверяем на соответствие рег.выраж.
- * @param {regExp} regularExpression - Регулярное выражение.
- * @returns {boolean} Результат проверки на соответствие регулярному выражению.
- */
-function regularExpressionsCheckInput(idElement, regularExpression) {
-    const element = getElementFromHtml(idElement).value;
-    return regularExpression.test(element);
-};
-
-/**
- * Функция изменяет цвет рамки тега, содержание которого не соотв. рег.выр.
- * @param {string} idElement - Id тега, рамку которого изменяем.
- * @param {string} error - Текст выводимой ошибки.
- */
-function changeBorderColor(idElement, error) {
-    const element = getElementFromHtml(idElement);
-    element.classList.add('border-red');
-    getElementFromHtml('error-message').textContent += error;
-};
-
-/**
- * Функция поэлементной валидации.
- * @param {array} array - Массив содержащий булевые элементы false или true.
- * @returns {boolean} valid - Вернет false, если хотя-бы один эл-т массива true.
- */
-function validationFields(array) {
-    var valid = true;
-    array.forEach(function(invalid) {
-        if (invalid) { 
-            valid = false; 
-        };
-    })
-    return valid;
-};
-
-/**
- * Функция выводит alert и перезагружает страницу.
- * @param {boolean} condition - Условие, при котором выполнится ф-ция.
- */
-function reload(condition) {
-    if (condition) { 
-        alert('Congrat! Data upload successeful...');
-        document.location.reload(true);
-    }
-};
 
 /**
  * Класс для валидации полей формы.
+ * 
  * @property {array} fields Массив, содержащий массивы с данными
  * полей формы.
  */
 function validationFieldsOfForm(fields) {
+    // массив содержащий имена тегов, регулярные выражения и тексты ошибок
     this.arrayFields = fields;
+    // массив заполняемый id тегами, которые не прошли проверку 
+    // на соответствие регулянрому выражению
+    this.arrayOfFailFields = [];
+    // массив, содержащий ошибоки, выводимые на экран после проверки
+    this.arrayOfErrors = [];
+};
+
+/**
+ * Метод возвращает элемент из html по его id.
+ * 
+ * @param {string} id - идентификатор тега.
+ * @returns {object} Возвращается html-элемент.
+ */
+validationFieldsOfForm.prototype.getElementFromHtml = function (id) {
+    return document.getElementById(id);
+}
+
+/**
+ * Метод проверяет значение тега на соотв. регулярному выражению.
+ * 
+ * @param {string} idElement - Тэг, значение которого проверяем на соответствие рег.выраж.
+ * @param {regExp} regularExpression - Регулярное выражение.
+ * @returns {boolean} Результат проверки на соответствие регулярному выражению.
+ */
+validationFieldsOfForm.prototype.regularExpressionsCheckInput = function (
+    idElement, regularExpression) {
+        const element = this.getElementFromHtml(idElement).value;
+        return regularExpression.test(element);
+};
+
+/**
+ * Метод показывает ошибки, выделяет тега с ошибками с помощью эффекта 
+ * bounce и изменяет цвет их рамки тега
+ * 
+ * @param {string} idElement - Id тега, рамку которого изменяем.
+ * @param {string} error - Текст выводимой ошибки.
+ */
+validationFieldsOfForm.prototype.showErrors = function () {
+
+                // $form.removeClass( 'border-red' );
+                // console.log($form);
+
+    for(let idElement of this.arrayOfFailFields) {
+        // выделение неправильных полей красной рамкой и эффектом тряски
+        $( `#${idElement}` ).addClass( 'border-red' );
+        $( `#${idElement}` ).effect( "bounce", "slow" );
+    }
+        // очистка диалогового окна
+        $dialog.empty();
+            // заполнение диалога текстом ошибок
+            $dialog.append(this.arrayOfErrors.join('<br>') + '</p>');
+            // показать диалог
+            $dialog.show();
+        // эффекты диалога
+        $dialog.dialog({
+          show: { effect: "fade", duration: 500 }
+        });
+};
+
+/**
+ * Метод выводит alert и перезагружает страницу.
+ * 
+ * @param {boolean} condition - Условие, при котором выполнится ф-ция.
+ */
+validationFieldsOfForm.prototype.reload = function (condition) {
+    if (condition) { 
+        alert('Congrat! Data upload successeful...');
+        document.location.reload(true);
+    } else {
+        this.showErrors(); 
+    }
+};
+
+/**
+ * Метод поэлементной валидации.
+ * 
+ * @param {array} array - Массив содержащий булевые элементы false или true.
+ * @returns {boolean} valid - Вернет false, если хотя-бы один эл-т массива true.
+ */
+validationFieldsOfForm.prototype.validationFields = function (array) {
+    var valid = true;
+    array.forEach(function(invalid) {
+        if (invalid) { 
+            valid = false;
+        };
+    })
+    return valid;
 };
 
 /**
@@ -130,23 +160,27 @@ validationFieldsOfForm.prototype.checkArray = function () {
     var i = 0;
 
     // проверка на валидность каждого поля формы
-    this.arrayFields.forEach(function(fieldOfForm) {
-        if (regularExpressionsCheckInput(fieldOfForm[0], fieldOfForm[1])) { 
+    for(let fieldOfForm of this.arrayFields) { 
+        if (this.regularExpressionsCheckInput(fieldOfForm[0], fieldOfForm[1])) { 
+            // заполнение массива валидации
             arrayOfInvalidation[i] = false;
         } else {
-            changeBorderColor(fieldOfForm[0], fieldOfForm[2]);
+            // заполнение массива id тегами, не прошедшими проверку
+            this.arrayOfFailFields.push(fieldOfForm[0]);
+            // заполнение массива текстами ошибок для отображения в диалоге
+            this.arrayOfErrors.push(fieldOfForm[2]);
+            // заполнение массива валидации
             arrayOfInvalidation[i] = true;
         }
         ++i;
-    })
+    }
 
     // булевая переменная которая определяет успешность метода
-    var validation = validationFields(arrayOfInvalidation);
-    reload(validation);
+    var validation = this.validationFields(arrayOfInvalidation);
+    this.reload(validation);
 };
 
-var button = document.getElementById('btn-snt');
-button.addEventListener('click', function() {
+$('#btn-snt').on('click', function() {
     // исходный массив с данными полей формы [id, регулярн.выраж., сообщ.об ошибке]
     const arrayFields = [
         [
@@ -168,6 +202,11 @@ button.addEventListener('click', function() {
             'text', 
             /\d*\s*\w*/ig, 
             'Incorrect message!'
+        ],
+        [
+            'birthday', 
+            /^[\d.]+$/, 
+            'Please, enter your birthday!'
         ]
     ];
     var validationForm = new validationFieldsOfForm(arrayFields);

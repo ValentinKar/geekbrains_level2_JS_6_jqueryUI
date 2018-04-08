@@ -3,45 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <title>form validation</title>
+    <link rel="stylesheet" href="bower_components/jquery-ui/themes/base/all.css">
     <style>
       .border-red{
         border-color: red;
       }
+      #form {
+          margin-top: 30px;
+          margin-left: 30px;
+      }
+      #form div {
+          margin: 10px 0;
+      }
+      #form button {
+          margin-top: 20px;
+          margin-left: 70px;
+      }
     </style>
 </head>
 <body>
+
+
+    <div id="form">
     <h3>You may to sent a message for us.</h3>
     <h4>Enter your data into fields of form, please!</h4>
-    <div id="form">
-        <div id="error-message"></div><br>
-        <label>
+
+        <div><label>
             Name:<input type="text" id="name" value="Valentin">
-        </label>
-        <br><br>
-        <label>
+        </label></div>
+
+        <div><label>
             Phone:<input type="text" id="phone" value="+7(000)000-0000">
-        </label>
-        <br><br>
-        <label>
+        </label></div>
+
+        <div><label>
             E-mail:<input type="text" id="e-mail" value="my.mail@mail.ru">
-        </label>
-        <br><br>
-        <label>
+        </label></div>
+
+        <div><label>
             Message:<textarea id="text">My message 0123456789 !@#$%^*()</textarea>
-        </label>
-        <br><br>
-        <label>City:
+        </label></div>
+
+        <div><label>City:
             <select class="city"></select>
-        </label>
-        <br><br>
+        </label></div>
+
+        <div><label>Birthday:
+            <input type="text" id="birthday">
+        </label></div>
+
         <button id="btn-snt">to sent</button>
+
+<div id="dialog" title="Errors"></div>
+
     </div>
+
+
     <script
         src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous">
     </script>
-    <!-- <script src="jquery-3.3.1.js"></script> -->
+    <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+
     <script src="frm-vldtion.js"></script>
+
 </body>
 </html>
