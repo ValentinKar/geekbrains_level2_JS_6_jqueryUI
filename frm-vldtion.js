@@ -11,6 +11,10 @@ var $datepicker = $('#birthday');
 var $form = $('#form');
 
 
+
+
+
+
 //AJAX
 $.ajax({
     type: 'GET',
@@ -49,7 +53,18 @@ let select = $('.city ');
 
         // диалоговое окно с ошибками
         $dialog.hide();
+
+
+            $(".lazy").slick({
+              lazyLoad: 'ondemand', // ondemand progressive anticipated
+              infinite: true
+            });
+
+
 });
+
+
+
 
 
 /**
