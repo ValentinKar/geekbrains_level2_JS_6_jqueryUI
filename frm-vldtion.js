@@ -55,10 +55,13 @@ let select = $('.city ');
         $dialog.hide();
 
 
-            $(".lazy").slick({
-              lazyLoad: 'ondemand', // ondemand progressive anticipated
-              infinite: true
-            });
+              $(".center").slick({
+                dots: true,
+                infinite: true,
+                centerMode: true,
+                slidesToShow: 5,
+                slidesToScroll: 3
+              });
 
 
 });
