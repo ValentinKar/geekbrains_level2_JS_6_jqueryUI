@@ -6,13 +6,12 @@
 const questionUrl = './cities.json';
 // массив для названий городов
 var cities = [];
+// диалоговое окно с ошибками
 var $dialog = $( "#dialog" );
+// календарь
 var $datepicker = $('#birthday');
+// форма для комментариев
 var $form = $('#form');
-
-
-
-
 
 
 //AJAX
@@ -44,30 +43,25 @@ let select = $('.city ');
         // размещение <option>sity</option> внутри select
         $(option).appendTo(select);
     })
-            // календарь
-            $datepicker.datepicker({
-                dateFormat: "dd.mm.yy",
-                dayNamesMin: [ "ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ" ],
-                firstDay: 1
-            });
+        // календарь
+        $datepicker.datepicker({
+            dateFormat: "dd.mm.yy",
+            dayNamesMin: [ "ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ" ],
+            firstDay: 1
+        });
 
-        // диалоговое окно с ошибками
-        $dialog.hide();
+    // диалоговое окно с ошибками
+    $dialog.hide();
 
-
-              $(".center").slick({
-                dots: true,
-                infinite: true,
-                centerMode: true,
-                slidesToShow: 5,
-                slidesToScroll: 3
-              });
-
-
+        // карусель
+        $(".center").slick({
+            dots: true,
+            infinite: true,
+            centerMode: true,
+            slidesToShow: 3,
+            slidesToScroll: 2
+        });
 });
-
-
-
 
 
 /**
@@ -118,8 +112,8 @@ validationFieldsOfForm.prototype.regularExpressionsCheckInput = function (
  */
 validationFieldsOfForm.prototype.showErrors = function () {
 
-                // $form.removeClass( 'border-red' );
-                // console.log($form);
+        // удаляем класс border-red из тегов
+        $('.border-red').removeClass('border-red');
 
     for(let idElement of this.arrayOfFailFields) {
         // выделение неправильных полей красной рамкой и эффектом тряски
